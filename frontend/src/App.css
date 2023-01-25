@@ -1,0 +1,16 @@
+h3 {
+    margin-left: 15px;
+}
+
+body {
+    background-color: aliceblue;
+}
+
+.categories {
+    display: flex;
+}
+
+.bigtitle {
+    width: 100%;
+    text-align: center;
+}

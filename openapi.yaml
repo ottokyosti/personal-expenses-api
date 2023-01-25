@@ -1,0 +1,263 @@
+openapi: 3.0.3
+info:
+  version: 1.0.0
+  title: Personal Expenses API
+  description: Personal Expenses API is a simple backend api for keeping a track of your personal expenses. This api has endpoints to retrieve list of expenses, sorted by month or any other value. There are also enpoints for adding, deleting and updating data in the database.
+servers:
+  - url: https://personal-expenses-api.onrender.com/api/
+paths:
+  /expenses:
+    get:
+      summary: Returns an array of expenses               
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Expense'
+        '500':
+          $ref: '#/components/responses/500Error'
+    post:
+      summary: Creates a new expense
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object 
+              properties:
+                date:
+                  type: string
+                amount:
+                  type: number
+                shop:
+                  type: string
+                category:
+                  type: string
+      responses:
+        '201':
+          description: Created succesfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Expense'
+        '400':
+          $ref: '#/components/responses/400Error'
+        '500':
+          $ref: '#/components/responses/500Error'
+
+  /expenses/{month}:
+    get:
+      summary: Returns expenses from specific month
+      parameters:
+        - name: month
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successfully returned an array of expenses
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id: 
+                      type: integer
+                    date:
+                      type: string
+                    amount:
+                      type: number
+                    shop:
+                      type: string
+                    category:
+                      type: string
+                    month:
+                      type: string
+        '404':
+          $ref: '#/components/responses/404Error'
+        '500':
+          $ref: '#/components/responses/500Error'
+          
+  /expenses/total:
+    get:
+      summary: Return all expenses and total amount of expenses
+      responses:
+        '200':
+          description: Successfully summed amounts and returned expenses
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id: 
+                          type: integer
+                        date:
+                          type: string
+                        amount:
+                          type: number
+                        shop:
+                          type: string
+                        category:
+                          type: string
+                  totalAmount:
+                    type: number
+        '500':
+          $ref: '#/components/responses/500Error'
+          
+  /expenses/sort:
+    get:
+      summary: Get expenses sorted by specific criteria
+      parameters:
+        - name: id
+          in: query
+          required: true
+          description: Sorts expenses by id
+          schema:
+            type: integer
+        - name: date
+          in: query
+          required: true
+          description: Sorts expenses by date
+          schema:
+            type: string
+        - name: amount
+          in: query
+          required: true
+          description: Sorts expenses by number
+          schema:
+            type: number
+        - name: shop
+          in: query
+          required: true
+          description: Sorts expenses by shop
+          schema:
+            type: string
+        - name: category
+          in: query
+          required: true
+          description: Sorts expenses by category
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successfully fetched sorted expenses
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Expense'
+        '404':
+          $ref: '#/components/responses/404Error'
+        '500':
+          $ref: '#/components/responses/500Error'
+          
+  /expenses/{id}:
+    delete:
+      summary: Delete a specific expense
+      parameters:
+        - $ref: '#/components/parameters/ID'
+      responses:
+        '200':
+          description: Expense successfully deleted
+          content:
+            text/html:
+              schema:
+                type: string
+                example: Expense deleted
+        '404':
+          $ref: '#/components/responses/404Error'
+        '500':
+          $ref: '#/components/responses/500Error'
+    
+    patch:
+      summary: Updates specific expense
+      parameters:
+        - $ref: '#/components/parameters/ID'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                date: 
+                  type: string
+                amount: 
+                  type: number
+                shop:
+                  type: string
+                category:
+                  type: string
+      responses:
+        '200':
+          description: Updated expense
+          content:
+            text/html:
+              schema:
+                type: string
+                example: Expense updated successfully
+        '400':
+          $ref: '#/components/responses/400Error'
+        '404':
+          $ref: '#/components/responses/404Error'
+        '500':
+          $ref: '#/components/responses/500Error'
+
+components:
+  parameters:
+    ID:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: integer
+  schemas:
+    Expense:
+      type: object
+      properties:   
+        id:
+          type: integer
+        date:
+          type: string
+        amount:
+          type: number
+        shop:
+          type: string
+        category:
+          type: string
+      
+  responses:
+    400Error:
+      description: Invalid request
+      content:
+        text/html:
+          schema:
+            type: string
+            example: Invalid value
+    404Error:
+      description: Not found
+      content:
+        text/html:
+          schema:
+            type: string
+            example: Not found
+    500Error:
+      description: Internal error
+      content:
+        text/html:
+          schema:
+            type: string
+            example: Internal server error

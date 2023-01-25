@@ -1,0 +1,40 @@
+GET http://localhost:5000/api/expenses HTTP/1.1
+
+###
+
+GET http://localhost:5000/api/expenses/January HTTP/1.1
+
+###
+
+GET http://localhost:5000/api/expenses/sort?date=2023-01-02 HTTP/1.1
+
+###
+
+GET http://localhost:5000/api/expenses/total HTTP/1.1
+
+###
+
+POST http://localhost:5000/api/expenses HTTP/1.1
+Content-Type: application/json
+
+{
+    "date": "2023-12-31",
+    "amount": 444.13,
+    "shop": "Verkkokauppa",
+    "category": "Pelaaminen"
+}
+
+###
+
+DELETE http://localhost:5000/api/expenses/28 HTTP/1.1
+
+###
+
+PATCH http://localhost:5000/api/expenses/1 HTTP/1.1
+Content-Type: application/json
+
+{
+    "amount": 123.142434134314214,
+    "shop": "Telia",
+    "category": "Ruoka"
+}
